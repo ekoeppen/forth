@@ -78,7 +78,7 @@
 @
 @ can we use load/store multiple to our advantage?
 
-#include <asm/unistd.h>
+@ #include <asm/unistd.h>
 
 @ for some reason .set doesn't seem to work for this
 
@@ -1274,7 +1274,7 @@ oabi_syscall_table:
 	defcode "SYSCALL3",8,,SYSCALL3
 	POPPSP	r7		@ syscall number
 	@ begin OABI adjustments
-	sub	r7, r7, #__NR_OABI_SYSCALL_BASE
+	@ sub	r7, r7, #__NR_OABI_SYSCALL_BASE
 	ldr	r0, =oabi_syscall_table
 	add	r7, r0, r7, LSL #3
 	@ end OABI adjustments
@@ -1289,7 +1289,7 @@ oabi_syscall_table:
 	defcode "SYSCALL2",8,,SYSCALL2
 	POPPSP	r7		@ syscall number
 	@ begin OABI adjustments
-	sub	r7, r7, #__NR_OABI_SYSCALL_BASE
+	@ sub	r7, r7, #__NR_OABI_SYSCALL_BASE
 	ldr	r0, =oabi_syscall_table
 	add	r7, r0, r7, LSL #3
 	@ end OABI adjustments
@@ -1303,7 +1303,7 @@ oabi_syscall_table:
 	defcode "SYSCALL1",8,,SYSCALL1
 	POPPSP	r7		@ syscall number
 	@ begin OABI adjustments
-	sub	r7, r7, #__NR_OABI_SYSCALL_BASE
+	@ sub	r7, r7, #__NR_OABI_SYSCALL_BASE
 	ldr	r0, =oabi_syscall_table
 	add	r7, r0, r7, LSL #3
 	@ end OABI adjustments
@@ -1316,7 +1316,7 @@ oabi_syscall_table:
 	defcode "SYSCALL0",8,,SYSCALL0
 	POPPSP	r7		@ syscall number
 	@ begin OABI adjustments
-	sub	r7, r7, #__NR_OABI_SYSCALL_BASE
+	@ sub	r7, r7, #__NR_OABI_SYSCALL_BASE
 	ldr	r0, =oabi_syscall_table
 	add	r7, r0, r7, LSL #3
 	@ end OABI adjustments
