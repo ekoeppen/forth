@@ -363,18 +363,18 @@ _DIVMOD:
 	mov	T0, #stderr
 	ldr	T1, =divmsg		@ address
 	mov	T2, #divmsgend-divmsg	@ length
-	svc	__NR_write
+	@ svc	__NR_write
 	mov	T0, #-1
-	svc	__NR_exit
+	@ svc	__NR_exit
 
 3:
 	@ division by 0 error
 	mov	T0, #stderr
 	ldr	T1, =posmsg		@ address
 	mov	T2, #posmsgend-posmsg	@ length
-	svc	__NR_write
+	@ svc	__NR_write
 	mov	T0, #-1
-	svc	__NR_exit
+	@ svc	__NR_exit
 
 	.section .rodata
 divmsg: .ascii "DIVISION BY 0!\n"
@@ -678,14 +678,6 @@ var_\name :
 	defconst "F_HIDDEN",8,,__F_HIDDEN,F_HIDDEN
 	defconst "F_LENMASK",9,,__F_LENMASK,F_LENMASK
 
-	defconst "SYS_EXIT",8,,SYS_EXIT,__NR_exit
-	defconst "SYS_OPEN",8,,SYS_OPEN,__NR_open
-	defconst "SYS_CLOSE",9,,SYS_CLOSE,__NR_close
-	defconst "SYS_READ",8,,SYS_READ,__NR_read
-	defconst "SYS_WRITE",9,,SYS_WRITE,__NR_write
-	defconst "SYS_CREAT",9,,SYS_CREAT,__NR_creat
-	defconst "SYS_BRK",7,,SYS_BRK,__NR_brk
-
 	defconst "O_RDONLY",8,,__O_RDONLY,0
 	defconst "O_WRONLY",8,,__O_WRONLY,1
 	defconst "O_RDWR",6,,__O_RDWR,2
@@ -751,7 +743,7 @@ _KEY:
 	mov	T0, #stdin
 	ldr	T1, =buffer
 	mov	T2, #BUFFER_SIZE
-	svc	__NR_read
+	@ svc	__NR_read
 	cmp	T0, #0			@ <= 0?
 	ble	2f			@ yes, fatal error
 	ldr	T1, =buffer
@@ -760,7 +752,7 @@ _KEY:
 	str	T1, [S2]		@ update bufftop (with length we read)
 	b	3b			@ try fast path again
 2:
-	svc	__NR_exit		@ exit (with error code from NR_read)
+	@ svc	__NR_exit		@ exit (with error code from NR_read)
 
 	.data
 	.align 2
@@ -780,7 +772,7 @@ _EMIT:
 	ldr	T1, =emit_scratch	@ buffer
 	strb	T0, [T1]		@ store char in buffer
 	mov	T0, #stdout
-	svc	__NR_write
+	@ svc	__NR_write
 	bx	lr
 
 	.data
@@ -1092,7 +1084,7 @@ _TELL:
 	mov	T2, T1		@ length
 	mov	T1, T0		@ address
 	mov	T0, #stdout
-	svc	__NR_write
+	@ svc	__NR_write
 	bx	lr
 
 	defword "QUIT",4,,QUIT
@@ -1167,7 +1159,7 @@ _TELL:
 	mov	T0, #stderr
 	ldr	T1, =errmsg		@ address
 	mov	T2, #errmsgend-errmsg	@ length
-	svc	__NR_write
+	@ svc	__NR_write
 
 	mov	T0, #stderr
 	ldr	T1, =currkey		@ address of currkey
@@ -1177,12 +1169,12 @@ _TELL:
 	cmp	T2, #40			@ > 40?
 	movgt	T2, #40			@ cap at 40
 	sub	T1, T1, T2		@ ??????
-	svc	__NR_write
+	@ svc	__NR_write
 
 	mov	T0, #stderr
 	ldr	T1, =errmsgnl		@ address
 	mov	T2, #1			@ length
-	svc	__NR_write
+	@ svc	__NR_write
 	NEXT
 
 	.section .rodata
@@ -1204,26 +1196,26 @@ errmsgnl: .ascii "\n"
 
 @ The SYSCALL? words are somewhat of a pain for OABI since we don't
 @ pass the syscall number in a register. So instead we need a table
-@ of svc instructions out of which we select one. This requires the
+@ of @ svc instructions out of which we select one. This requires the
 @ syscall numbers to be "adjusted" appropriately. For EABI we could
 @ do better of course...
 
 	.text
 oabi_syscall_table:
 	.space	8		@ 0 __NR_restart_syscall
-	svc	__NR_exit	@ 1
+	@ svc	__NR_exit	@ 1
 	bx	lr
 	.space	8		@ 2 __NR_fork
-	svc	__NR_read	@ 3
+	@ svc	__NR_read	@ 3
 	bx	lr
-	svc	__NR_write	@ 4
+	@ svc	__NR_write	@ 4
 	bx	lr
-	svc	__NR_open	@ 5
+	@ svc	__NR_open	@ 5
 	bx	lr
-	svc	__NR_close	@ 6
+	@ svc	__NR_close	@ 6
 	bx	lr
 	.space	8		@ 7 __NR_waitpid (deprecated)
-	svc	__NR_creat	@ 8
+	@ svc	__NR_creat	@ 8
 	bx	lr
 	.space	8		@ 9
 	.space	8		@ 10
@@ -1261,7 +1253,7 @@ oabi_syscall_table:
 	.space	8		@ 42
 	.space	8		@ 43
 	.space	8		@ 44
-	svc	__NR_brk	@ 45
+	@ svc	__NR_brk	@ 45
 	bx	lr
 	.space	8		@ 46
 	.space	8		@ 47
@@ -1335,11 +1327,11 @@ set_up_data_segment:
 	bx	lr
 @ original code to make data segment extensible
 @	mov	r0, #0
-@	svc	__NR_brk
+@	@ svc	__NR_brk
 @	ldr	r1, =var_HERE
 @	str	r0, [r1]
 @	add	r0, r0, #INITIAL_DATA_SEGMENT_SIZE
-@	svc	__NR_brk
+@	@ svc	__NR_brk
 @	bx	lr
 
 	.set RETURN_STACK_SIZE,8192
@@ -1352,7 +1344,7 @@ debug_ping:
 	mov	r0, #stderr
 	ldr	r1, =debugmsg		@ address
 	mov	r2, #debugend-debugmsg	@ length
-	svc	__NR_write
+	@ svc	__NR_write
 	ldmfd	sp!, {r0-r12}
 	bx	lr
 	.section .rodata
@@ -1377,17 +1369,17 @@ debug_pong:
 	mov	T0, #stderr
 	ldr	T1, =rmsg		@ address
 	mov	T2, #rmsgend-rmsg	@ length
-	svc	__NR_write
+	@ svc	__NR_write
 
 	mov	T0, #stderr
 	mov	T1, S0
 	mov	T2, S1
-	svc	__NR_write
+	@ svc	__NR_write
 
 	mov	T0, #stderr
 	ldr	T1, =rmsgnl		@ address
 	mov	T2, #1			@ length
-	svc	__NR_write
+	@ svc	__NR_write
 1:
 	bx	lr
 
